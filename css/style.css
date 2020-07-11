@@ -1,9 +1,7 @@
-* {
-    text-align: center;
-    margin: 10px auto;
-    padding: 0px;
-}
-canvas {
-    box-shadow: 0px 0px 0px 1px gray;
+#canvas {
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
 }

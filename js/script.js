@@ -1,45 +1,28 @@
 // onload
-onload = function(){
+onload = () => {
 
-    var mx, my, cw, ch;
-    var time = 0.0;
-    var startTime = new Date().getTime();
+    let mx, my;
+    const startTime = new Date().getTime();
 
     // canvasエレメントを取得
-    var c = document.getElementById('canvas');
+    const c = document.getElementById('canvas');
 
     // webglコンテキストを取得
-    var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
-
-    // アプリ立ち上げ時画面サイズ調整
-    display_resize(gl);
-    update_framebuffer(gl);
-    cw = c.width;
-    ch = c.height;
-
-    // ウィンドウサイズ変更後画面サイズ調整
-    window.onresize = function(){
-        display_resize(gl);
-        update_framebuffer(gl);
-        cw = c.width;
-        ch = c.height;
-    };
+    const gl = c.getContext('webgl') || c.getContext('experimental-webgl');
 
     // イベントリスナー登録
-    c.addEventListener('mousemove', function(e){
-        mx = e.offsetX / cw;
-        my = e.offsetY / ch;
+    c.addEventListener('mousemove', (e) => {
+        mx = e.offsetX / c.width;
+        my = e.offsetY / c.height;
     }, true);
 
     // matIVオブジェクトを生成
-    var m = new matIV();
+    const m = new matIV();
     // 各種行列の生成と初期化
-    var mMatrix = m.identity(m.create());
-    var vMatrix = m.identity(m.create());
-    var pMatrix = m.identity(m.create());
-    var tmpMatrix = m.identity(m.create());
-    var mvpMatrix = m.identity(m.create());
-    var invMatrix = m.identity(m.create());
+    const mMatrix = m.identity(m.create());
+    const vMatrix = m.identity(m.create());
+    const pMatrix = m.identity(m.create());
+    const mvpMatrix = m.identity(m.create());
 
     // 深度テストを有効にする
     gl.enable(gl.DEPTH_TEST);
@@ -49,41 +32,41 @@ onload = function(){
     gl.enable(gl.BLEND);
 
     // 頂点シェーダとフラグメントシェーダの生成
-    var main_vs = create_shader(gl, 'main_vs');
-    var main_fs = create_shader(gl, 'main_fs');
+    const main_vs = create_shader(gl, 'main_vs');
+    const main_fs = create_shader(gl, 'main_fs');
 
     // プログラムオブジェクトの生成とリンク
-    var main_prg = create_program(gl, main_vs, main_fs);
+    const main_prg = create_program(gl, main_vs, main_fs);
 
     // attributeLocationの取得
-    var main_attL = new Array();
+    let main_attL = [];
     main_attL[0] = gl.getAttribLocation(main_prg, 'position');
 
     // attributeの要素数
-    var main_attS = new Array();
+    let main_attS = [];
     main_attS[0] = 3;
 
     // uniformLocationの取得
-    var main_uniL = new Array();
+    let main_uniL = [];
     main_uniL[0] = gl.getUniformLocation(main_prg, 'mvpMatrix');
     main_uniL[1] = gl.getUniformLocation(main_prg, 'time');
     main_uniL[2] = gl.getUniformLocation(main_prg, 'mouse');
     main_uniL[3] = gl.getUniformLocation(main_prg, 'resolution');
 
-    var vertex_position = [
+    const vertex_position = [
         -1.0,  1.0,  0.0,
          1.0,  1.0,  0.0,
         -1.0, -1.0,  0.0,
          1.0, -1.0,  0.0
     ];
 
-    var index = [
+    const index = [
         0, 2, 1,
         1, 2, 3
     ];
 
-    var position_vbo = create_vbo(gl, vertex_position);
-    var index_ibo = create_ibo(gl, index);
+    const position_vbo = create_vbo(gl, vertex_position);
+    const index_ibo = create_ibo(gl, index);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, position_vbo);
     gl.enableVertexAttribArray(main_attL[0]);
@@ -103,13 +86,7 @@ onload = function(){
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // 時間管理
-        time = (new Date().getTime() - startTime) * 0.001;
-
-        // ビュー座標変換行列
-        //m.lookAt([0.0, 1.0, 3.0], [0, 0, 0], [0, 1, 0], vMatrix);
-
-        // プロジェクション座標変換行列
-        //m.perspective(90, c.width / c.height, 0.1, 100, pMatrix);
+        const time = (new Date().getTime() - startTime) * 0.001;
 
         // 各行列を掛け合わせ座標変換行列を完成させる
         m.multiply(pMatrix, vMatrix, mvpMatrix);
@@ -121,7 +98,7 @@ onload = function(){
         // uniform 関連
         gl.uniform1f(main_uniL[1], time);
         gl.uniform2fv(main_uniL[2], [mx, my]);
-        gl.uniform2fv(main_uniL[3], [cw, ch]);
+        gl.uniform2fv(main_uniL[3], [c.width, c.height]);
 
         // モデルの描画
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
@@ -133,11 +110,3 @@ onload = function(){
     })();
 
 };
-
-
-
-
-
-
-
-
