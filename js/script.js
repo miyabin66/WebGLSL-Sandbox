@@ -39,15 +39,15 @@ onload = () => {
     const main_prg = create_program(gl, main_vs, main_fs);
 
     // attributeLocationの取得
-    let main_attL = [];
+    const main_attL = [];
     main_attL[0] = gl.getAttribLocation(main_prg, 'position');
 
     // attributeの要素数
-    let main_attS = [];
+    const main_attS = [];
     main_attS[0] = 3;
 
     // uniformLocationの取得
-    let main_uniL = [];
+    const main_uniL = [];
     main_uniL[0] = gl.getUniformLocation(main_prg, 'mvpMatrix');
     main_uniL[1] = gl.getUniformLocation(main_prg, 'time');
     main_uniL[2] = gl.getUniformLocation(main_prg, 'mouse');
