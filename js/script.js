@@ -13,7 +13,7 @@ onload = () => {
     // イベントリスナー登録
     c.addEventListener('mousemove', (e) => {
         mx = e.offsetX / c.width;
-        my = e.offsetY / c.height;
+        my = - e.offsetY / c.height;
     }, true);
 
     // matIVオブジェクトを生成
